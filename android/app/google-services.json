@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "759520270291",
+    "project_id": "wordclub-1358c",
+    "storage_bucket": "wordclub-1358c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759520270291:android:b25cb15939394060470126",
+        "android_client_info": {
+          "package_name": "com.jasolangi.wordclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759520270291-uf6b7pc2icg4tq23mokg1c4a9cbs2ouk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-VmxpIHfw1QxoYW4lnE6sMFol5IVo8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759520270291-uf6b7pc2icg4tq23mokg1c4a9cbs2ouk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
