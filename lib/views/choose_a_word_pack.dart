@@ -8,6 +8,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localization/localization.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:wordclub/views/quizviews/flash_cards.dart';
+import 'package:wordclub/views/quizviews/fill%20in%20the%20blanks.dart';
+import 'package:wordclub/views/quizviews/match%20the%20vowel.dart';
+import 'package:wordclub/views/quizviews/match%20words.dart';
+import 'package:wordclub/views/quizviews/multiple%20choices.dart';
+import 'package:wordclub/views/quizviews/type%20full%20word.dart';
 
 class Choose_a_word_pack extends StatefulWidget {
   Choose_a_word_pack(this.type, this.quiztype);
@@ -93,13 +98,42 @@ class _Choose_a_word_packState extends State<Choose_a_word_pack> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(13),
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Flash_cards(
-                                            bundletype: '',
-                                            quiztype: quiztype,
-                                          )));
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                if (quiztype == 'Flash Cards') {
+                                  return Flash_cards(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else if (quiztype == 'fill in the blanks') {
+                                  return Fill_In_TheBlanks(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else if (quiztype == 'Match_The_Words') {
+                                  return Match_The_Words(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else if (quiztype == 'Multiple_Choices') {
+                                  return Multiple_Choices(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else if (quiztype == 'Type Full Word') {
+                                  return Type_Full_Word(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else if (quiztype == 'Match_The_Vowel') {
+                                  return Match_The_Vowel(
+                                    bundletype: '',
+                                    quiztype: quiztype,
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              }));
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width - 30,

@@ -36,7 +36,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Match The Words')));
+                        Choose_a_word_pack(type, 'Match_The_Words')));
           }),
       Quiz_Option_Model(
           Title: 'Multiple Choices'.i18n(),
@@ -47,7 +47,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Multiple Choices')));
+                        Choose_a_word_pack(type, 'Multiple_Choices')));
           }),
     ];
     List<Quiz_Option_Model> Spellings_items = [
@@ -71,7 +71,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Fill in the Blanks')));
+                        Choose_a_word_pack(type, 'fill in the blanks')));
           }),
       Quiz_Option_Model(
           Title: 'Multiple Choices'.i18n(),
@@ -82,7 +82,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Multiple Choices')));
+                        Choose_a_word_pack(type, 'Multiple_Choices')));
           }),
       Quiz_Option_Model(
           Title: 'Type full word'.i18n(),
@@ -93,7 +93,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Type full word')));
+                        Choose_a_word_pack(type, 'Type Full Word')));
           }),
       Quiz_Option_Model(
           Title: 'Match The Vowel'.i18n(),
@@ -104,7 +104,7 @@ class Choose_a_quiz extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Choose_a_word_pack(type, 'Match The Vowel')));
+                        Choose_a_word_pack(type, 'Match_The_Vowel')));
           }),
     ];
     return Scaffold(
@@ -151,10 +151,9 @@ class Choose_a_quiz extends StatelessWidget {
                     itemBuilder: ((context, index) {
                       return GestureDetector(
                         onTap: () {
-                          Vocabularly_items[index].onpressed!();
                           type == 'Spellings'
-                              ? Spellings_items[index].onpressed
-                              : Vocabularly_items[index].onpressed;
+                              ? Spellings_items[index].onpressed!()
+                              : Vocabularly_items[index].onpressed!();
                         },
                         child: Card(
                           margin: EdgeInsets.symmetric(

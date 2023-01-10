@@ -29,82 +29,53 @@ void main() async {
   // ]);
 
   LocalJsonLocalization.delegate.directories = ['lib/i18n'];
-  runApp(BlocProvider(
-    create: (context) => GlobalCubit(),
-    child: BlocBuilder<GlobalCubit, GlobalState>(
-      builder: (context, state) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: [
-            GlobalMaterialLocalizations.delegate,
-            // GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            LocalJsonLocalization.delegate,
-          ],
-          supportedLocales: [
-            Locale('en', 'US'),
-            Locale('ur', 'PK'),
-          ],
-          localeResolutionCallback: (locale, supportedLocales) {
-            if (supportedLocales.contains(locale)) {
-              return locale;
-            }
-            if (locale?.languageCode == 'ur') {
-              return Locale('ur', 'PK');
-            }
-            // default language
-            return Locale('en', 'US');
-          },
-          locale: BlocProvider.of<GlobalCubit>(context).app_language,
-          theme: theme(),
-          themeMode: ThemeMode.light,
-          initialRoute: '/Home',
-          onGenerateRoute: Routes.onGenerateRoute,
-        );
-      },
-    ),
-  ));
+  runApp(Splash());
 }
 
-// class Main extends StatelessWidget {
-//   const Main({super.key});
+class Splash extends StatefulWidget {
+  const Splash({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (context) => GlobalCubit(),
-//       child: BlocBuilder<GlobalCubit, GlobalState>(
-//         builder: (context, state) {
-//           return MaterialApp(
-//             debugShowCheckedModeBanner: false,
-//             localizationsDelegates: [
-//               GlobalMaterialLocalizations.delegate,
-//               // GlobalWidgetsLocalizations.delegate,
-//               GlobalCupertinoLocalizations.delegate,
-//               LocalJsonLocalization.delegate,
-//             ],
-//             supportedLocales: [
-//               Locale('en', 'US'),
-//               Locale('ur', 'PK'),
-//             ],
-//             localeResolutionCallback: (locale, supportedLocales) {
-//               if (supportedLocales.contains(locale)) {
-//                 return locale;
-//               }
-//               if (locale?.languageCode == 'ur') {
-//                 return Locale('ur', 'PK');
-//               }
-//               // default language
-//               return Locale('en', 'US');
-//             },
-//             locale: BlocProvider.of<GlobalCubit>(context).app_language,
-//             theme: theme(),
-//             themeMode: ThemeMode.light,
-//             initialRoute: '/Home',
-//             onGenerateRoute: Routes.onGenerateRoute,
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
+  @override
+  State<Splash> createState() => _SplashState();
+}
+
+class _SplashState extends State<Splash> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => GlobalCubit(),
+        child: BlocBuilder<GlobalCubit, GlobalState>(
+          builder: (context, state) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                // GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                LocalJsonLocalization.delegate,
+              ],
+              supportedLocales: [
+                Locale('en', 'US'),
+                Locale('ur', 'PK'),
+              ],
+              localeResolutionCallback: (locale, supportedLocales) {
+                if (supportedLocales.contains(locale)) {
+                  return locale;
+                }
+                if (locale?.languageCode == 'ur') {
+                  return Locale('ur', 'PK');
+                }
+                // default language
+                return Locale('en', 'US');
+              },
+              locale: BlocProvider.of<GlobalCubit>(context).app_language,
+              theme: theme(),
+              themeMode: ThemeMode.light,
+              // initialRoute: '/Home',
+              home: Home(),
+              onGenerateRoute: Routes.onGenerateRoute,
+            );
+          },
+        ));
+  }
+}
