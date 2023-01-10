@@ -23,16 +23,17 @@ class Flash_cards extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      content: Text('Are you sure want to exit'),
+                      content: Text('Are you sure want to exit?'.i18n()),
                       actions: [
-                        ElevatedButton(onPressed: () {}, child: Text('Resume')),
+                        ElevatedButton(
+                            onPressed: () {}, child: Text('Resume'.i18n())),
                         ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },
-                            child: Text('Quit')),
+                            child: Text('Quit'.i18n())),
                       ],
                     );
                   });

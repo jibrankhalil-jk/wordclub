@@ -27,6 +27,8 @@
   "Origin": "Origin",
   "Defination": "Defination",
   "Sentences": "Sentences",
-  "Part of Speech": "Part of Speech"
-  
+  "Part of Speech": "Part of Speech",
+  "Resume": "Resume",
+  "Quit": "Quit",
+  "Are you sure want to exit?": "Are you sure want to exit?"
 }

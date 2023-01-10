@@ -1,5 +1,4 @@
 {
-
   "Start Quiz": "کوئز شروع کریں",
   "Bookmarks": "بک مارکس",
   "History": "ہسٹری",
@@ -17,13 +16,24 @@
   "Chose a word pack": "ورڈ پیک کا انتخاب کریں",
   "All Bundles": "تمام بنڈل",
   "Level one": "پہلے لیول",
-  "Level two": "دوسرالیول"  ,
+  "Level two": "دوسرالیول",
   "Level three": "تیسرالیول",
   "General": "جنرل",
   "Push notificaions": "Push notificaions",
   "Support": "سپورٹ",
   "Contact support": "سپورٹ سے رابطہ کریں۔",
   "About": "ایپ کے بارے میں",
-  "Language":"زبان"
-}
+  "Language": "زبان",
+  "Origin": "اصل",
+  "Defination": "تعریف",
+  "Sentences": "جملہ",
+  "Sentence": "جملہ",
+  "Part of Speech": "تقریر کا حصہ",
 
+
+  "Resume":"دوبارہ شروع کریں۔",
+  "Quit":"چھوڑو",
+  "Are you sure want to exit?":"کیا آپ واقعی باہر نکلنا چاہتے ہیں؟",
+  "Pronunciation":"تلفظ"
+  
+}
