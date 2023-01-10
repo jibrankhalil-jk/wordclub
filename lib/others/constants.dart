@@ -31,4 +31,11 @@ class AppAssets {
   final String match_the_vowel = 'assets/illustrations/match_the_vowel.svg';
   final String match_the_word = 'assets/illustrations/match_the_word.svg';
   final String mcqs = 'assets/illustrations/mcqs.svg';
+
+  // image illustratios
+  final String flash_cards2 = 'assets/imgs/flashcards.png';
+  final String match_the_vowel2 = 'assets/imgs/abc.png';
+  final String mcqs2 = 'assets/imgs/mcqs.png';
+  final String match_the_word2 = 'assets/imgs/Fraaaaame.png';
+  final String fill_in_the_blanks2 = 'assets/imgs/fillintheblanks.png';
 }

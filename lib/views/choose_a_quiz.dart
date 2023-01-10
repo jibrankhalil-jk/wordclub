@@ -18,6 +18,7 @@ class Choose_a_quiz extends StatelessWidget {
     List<Quiz_Option_Model> Vocabularly_items = [
       Quiz_Option_Model(
           Title: 'Flash Cards'.i18n(),
+          img: AppAssets().flash_cards2,
           Progress: '0',
           Icon: AppAssets().flash_cards,
           onpressed: () {
@@ -28,6 +29,7 @@ class Choose_a_quiz extends StatelessWidget {
                         Choose_a_word_pack(type, 'Flash Cards')));
           }),
       Quiz_Option_Model(
+          img: AppAssets().match_the_word2,
           Title: 'Match The Words'.i18n(),
           Progress: '0',
           Icon: AppAssets().match_the_word,
@@ -42,6 +44,7 @@ class Choose_a_quiz extends StatelessWidget {
           Title: 'Multiple Choices'.i18n(),
           Progress: '0',
           Icon: AppAssets().mcqs,
+          img: AppAssets().mcqs2,
           onpressed: () {
             Navigator.push(
                 context,
@@ -55,6 +58,7 @@ class Choose_a_quiz extends StatelessWidget {
           Title: 'Flash Cards'.i18n(),
           Progress: '0',
           Icon: AppAssets().flash_cards,
+          img: AppAssets().flash_cards2,
           onpressed: () {
             Navigator.push(
                 context,
@@ -65,6 +69,7 @@ class Choose_a_quiz extends StatelessWidget {
       Quiz_Option_Model(
           Title: 'Fill in the Blanks'.i18n(),
           Progress: '0',
+          img: AppAssets().fill_in_the_blanks2,
           Icon: AppAssets().fill_in_the_blanks,
           onpressed: () {
             Navigator.push(
@@ -75,6 +80,7 @@ class Choose_a_quiz extends StatelessWidget {
           }),
       Quiz_Option_Model(
           Title: 'Multiple Choices'.i18n(),
+          img: AppAssets().mcqs2,
           Progress: '0',
           Icon: AppAssets().mcqs,
           onpressed: () {
@@ -85,6 +91,7 @@ class Choose_a_quiz extends StatelessWidget {
                         Choose_a_word_pack(type, 'Multiple_Choices')));
           }),
       Quiz_Option_Model(
+          img: AppAssets().match_the_word2,
           Title: 'Type full word'.i18n(),
           Progress: '0',
           Icon: AppAssets().match_the_word,
@@ -96,6 +103,7 @@ class Choose_a_quiz extends StatelessWidget {
                         Choose_a_word_pack(type, 'Type Full Word')));
           }),
       Quiz_Option_Model(
+          img: AppAssets().match_the_vowel2,
           Title: 'Match The Vowel'.i18n(),
           Progress: '0',
           Icon: AppAssets().match_the_vowel,
@@ -144,7 +152,7 @@ class Choose_a_quiz extends StatelessWidget {
                 height: MediaQuery.of(context).size.height / 1.24,
                 child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.8, crossAxisCount: 2),
+                        childAspectRatio: 0.78, crossAxisCount: 2),
                     itemCount: type == 'Spellings'
                         ? Spellings_items.length
                         : Vocabularly_items.length,
@@ -165,13 +173,16 @@ class Choose_a_quiz extends StatelessWidget {
                               children: [
                                 Spacer(),
                                 Center(
-                                  child: SvgPicture.asset(
-                                    type == 'Spellings'
-                                        ? Spellings_items[index].Icon
-                                        : Vocabularly_items[index].Icon,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
+                                    // child: SvgPicture.asset(
+                                    //   type == 'Spellings'
+                                    //       ? Spellings_items[index].Icon
+                                    //       : Vocabularly_items[index].Icon,
+                                    //   fit: BoxFit.fill,),
+                                    child: Image.asset(
+                                  type == 'Spellings'
+                                      ? Spellings_items[index].img
+                                      : Vocabularly_items[index].img,
+                                )),
                                 Spacer(),
                                 Text(
                                   type == 'Spellings'
