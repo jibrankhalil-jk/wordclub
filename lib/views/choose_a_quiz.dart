@@ -165,11 +165,13 @@ class Choose_a_quiz extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Spacer(),
-                                SvgPicture.asset(
-                                  type == 'Spellings'
-                                      ? Spellings_items[index].Icon
-                                      : Vocabularly_items[index].Icon,
-                                  fit: BoxFit.fill,
+                                Center(
+                                  child: SvgPicture.asset(
+                                    type == 'Spellings'
+                                        ? Spellings_items[index].Icon
+                                        : Vocabularly_items[index].Icon,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                                 Spacer(),
                                 Text(

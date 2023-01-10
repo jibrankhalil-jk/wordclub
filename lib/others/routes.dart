@@ -24,7 +24,7 @@ class Routes {
         return MaterialPageRoute(
             builder: (context) => BlocProvider(
                   create: (context) => GlobalCubit(),
-                  child: const Settings(),
+                  child: Settings(),
                 ));
     }
   }
