@@ -17,6 +17,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<GlobalCubit>(context).inital_db_creating();
+    // BlocProvider.of<GlobalCubit>(context).Fetch_all_table_names( );
+    // BlocProvider.of<GlobalCubit>(context).Fetch_Table_Data(table: 'Beginners Part A');
     return Scaffold(
         body: Container(
       width: MediaQuery.of(context).size.width,

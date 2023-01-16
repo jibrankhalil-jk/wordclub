@@ -6,3 +6,5 @@ abstract class GlobalState {}
 class GlobalInitial extends GlobalState {}
 
 class GlobalDummystate extends GlobalState {}
+
+class Globalwordpack extends GlobalState {}
