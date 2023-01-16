@@ -17,9 +17,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<GlobalCubit>(context).inital_db_creating();
-    // BlocProvider.of<GlobalCubit>(context).Fetch_all_table_names( );
-    // BlocProvider.of<GlobalCubit>(context).Fetch_Table_Data(table: 'Beginners Part A');
+    // BlocProvider.of<GlobalCubit>(context).inital_db_creating();
+    // BlocProvider.of<GlobalCubit>(context).Adding_Data_to_tables();
+    // BlocProvider.of<GlobalCubit>(context)
+    //     .Fetch_Table_Data(table: 'Beginners Part A');
+    var buttonswidth = MediaQuery.of(context).size.width / 1.5;
+    var buttonsheight = MediaQuery.of(context).size.height / 9.5;
     return Scaffold(
         body: Container(
       width: MediaQuery.of(context).size.width,
@@ -51,8 +54,8 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                     onTap: () => Navigator.pushNamed(context, '/Start_Quiz'),
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      height: MediaQuery.of(context).size.height / 8,
+                      width: buttonswidth,
+                      height: buttonsheight,
                       child: Stack(
                         children: [
                           SvgPicture.asset(
@@ -77,8 +80,8 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                     onTap: () => Navigator.pushNamed(context, '/Bookmarks'),
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      height: MediaQuery.of(context).size.height / 8,
+                      width: buttonswidth,
+                      height: buttonsheight,
                       child: Stack(
                         children: [
                           SvgPicture.asset(
@@ -102,8 +105,8 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                     onTap: () => Navigator.pushNamed(context, '/History'),
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      height: MediaQuery.of(context).size.height / 8,
+                      width: buttonswidth,
+                      height: buttonsheight,
                       child: Stack(
                         children: [
                           SvgPicture.asset(
@@ -127,8 +130,8 @@ class _HomeState extends State<Home> {
                 GestureDetector(
                     onTap: () => Navigator.pushNamed(context, '/Settings'),
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 1.2,
-                      height: MediaQuery.of(context).size.height / 8,
+                      width: buttonswidth,
+                      height: buttonsheight,
                       child: Stack(
                         children: [
                           SvgPicture.asset(

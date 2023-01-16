@@ -22,7 +22,7 @@ class Flash_cards extends StatefulWidget {
 
 class _Flash_cardsState extends State<Flash_cards> {
   List<QuizMainModel> QuizList = [];
-  List<QuizMainModel> CompletedQuizList = [];
+
   int quiz_completed_status = 1;
   var myindex = 1;
 
@@ -37,18 +37,29 @@ class _Flash_cardsState extends State<Flash_cards> {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
+                      return CupertinoAlertDialog(
                         content: Text('Are you sure want to exit?'.i18n()),
                         actions: [
-                          ElevatedButton(
-                              onPressed: () {}, child: Text('Resume'.i18n())),
-                          ElevatedButton(
+                          TextButton(
+                              // color: Colors.blue,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Resume'.i18n(),
+                                style: TextStyle(color: Colors.blue),
+                              )),
+                          TextButton(
+                              // color: Colors.red,
                               onPressed: () {
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },
-                              child: Text('Quit'.i18n())),
+                              child: Text(
+                                'Quit'.i18n(),
+                                style: TextStyle(color: Colors.red),
+                              )),
                         ],
                       );
                     });
@@ -102,11 +113,56 @@ class _Flash_cardsState extends State<Flash_cards> {
                                               lineHeight: double.infinity,
                                               percent: double.parse(
                                                   '${(quiz_completed_status / QuizList.length) * 1}'),
-                                              progressColor: Colors.blue,
+                                              progressColor: Colors.orange,
                                             ),
                                           ),
-                                          SvgPicture.asset(
-                                              AppAssets().close_square)
+                                          InkWell(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return CupertinoAlertDialog(
+                                                      content: Text(
+                                                          'Are you sure want to exit?'
+                                                              .i18n()),
+                                                      actions: [
+                                                        TextButton(
+                                                            // color: Colors.blue,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                              'Resume'.i18n(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .blue),
+                                                            )),
+                                                        TextButton(
+                                                            // color: Colors.red,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Text(
+                                                              'Quit'.i18n(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
+                                                            )),
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            borderRadius:
+                                                BorderRadius.circular(9),
+                                            child: SvgPicture.asset(
+                                                AppAssets().close_square),
+                                          )
                                         ]),
                                     height: 100,
                                     decoration: BoxDecoration(
@@ -117,7 +173,7 @@ class _Flash_cardsState extends State<Flash_cards> {
                                   ),
                                   Expanded(
                                     child: PageView.builder(
-                                        physics: ClampingScrollPhysics(),
+                                        // physics: ClampingScrollPhysics(),
                                         onPageChanged: ((value) {
                                           setState(() {
                                             if (quiz_completed_status !=
@@ -135,21 +191,6 @@ class _Flash_cardsState extends State<Flash_cards> {
                                                     myindex + 1;
                                               }
                                             }
-
-                                            // CompletedQuizList.add(value);
-                                            // if (myindex == value) {
-                                            //   quiz_completed_status =
-                                            //       quiz_completed_status + 1;
-
-                                            //   myindex == QuizList.length
-                                            //       ? quiz_completed_status = 3
-                                            //       : null;
-                                            // }
-
-                                            log('value $value');
-                                            log('MyIndex $myindex');
-                                            log('completed $quiz_completed_status');
-                                            // log('MyIndex $myindex');
                                           });
                                         }),
                                         itemCount: datasnap.data.length,

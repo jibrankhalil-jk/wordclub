@@ -100,35 +100,13 @@ class GlobalCubit extends Cubit<GlobalState> {
 //     db.close();
 //   }
 
-  // Adding_Data_to_tables(
-  //   Database db,
-  //   List<QuizMainModel> data,
-  //   tablename,
-  // ) async {
-  //   // for (var index = 0; index <= data.length; index++) {
-  //   data.forEach((element) async {
-  //     // await db.insert(
-  //     //    '\'$tablename\'',
-  //     //     {
-  //     //       "word": element.word,
-  //     //       "origin": element.origin,
-  //     //       "part_of_speech": element.part_of_speech,
-  //     //       "defination": element.defination,
-  //     //       "sentence": element.sentence,
-  //     //       "pronunciation": element.pronunciation,
-  //     //       "Question": element.multiplechoices.Question,
-  //     //       "Option_A": element.multiplechoices.Option_A,
-  //     //       "Option_B": element.multiplechoices.Option_B,
-  //     //       "Option_C": element.multiplechoices.Option_C,
-  //     //       "Option_D": element.multiplechoices.Option_D,
-  //     //       "CorrectAnswer": element.multiplechoices.CorrectAnswer
-  //     //     },
-  //     //     conflictAlgorithm: ConflictAlgorithm.replace);
-
-  //     await db.rawQuery(
-  //         'INSERT INTO \"main\".\"$tablename\"(\"id\",\"word\",\"origin\",\"part_of_speech\",\"defination\",\"sentence\",\"pronunciation\",\"Question\",\"Option_A\",\"Option_B\",\"Option_C\",\"Option_D\",\"CorrectAnswer\") VALUES (NULL,\"${element.word}\",\"${element.origin}\",\"${element.part_of_speech}\",\"${element.defination}\",\"${element.sentence}\",\"${element.pronunciation}\",\"${element.multiplechoices.Question}\",\"${element.multiplechoices.Option_A}\",\"${element.multiplechoices.Option_B}\",\"${element.multiplechoices.Option_C}\",\"${element.multiplechoices.Option_D}\",${element.multiplechoices.CorrectAnswer});');
-  //   });
-  // }
+  Adding_Data_to_tables() async {
+    Database db = await openDatabase('QuizDb.db');
+    BeginersA.forEach((element) async {
+      await db.rawQuery(
+          'INSERT INTO \"main\".\"Beginners Part A\"  ( \"id\",\"word\",\"origin\",\"part_of_speech\",\"defination\",\"sentence\",\"pronunciation\",\"Mcq Question\",\"Mcq Option_A\",\"Mcq Option_B\",\"Mcq Option_C\",\"Mcq Option_D\",\"Mcq CorrectAnswer\",\"Mw Option A\",\"Mw Option B\",\"Mw Option C\",\"Mw Option D\",\"Mw CorrectAnswer\",\"Mc Option A\",\"Mc Option B\",\"Mc Option C\",\"Mc Option D\",\"Mc CorrectAnswer\"\) VALUES \(null, "${element.word}","${element.origin}","${element.part_of_speech}","${element.defination}","${element.sentence}","${element.pronunciation}","${element.multiplechoices.Mcq_Question}","${element.multiplechoices.Mcq_Option_A}","${element.multiplechoices.Mcq_Option_B}","${element.multiplechoices.Mcq_Option_C}","${element.multiplechoices.Mcq_Option_D}","${element.multiplechoices.Mcq_CorrectAnswer}","${element.Matchword.Mw_Option_A}","${element.Matchword.Mw_Option_B}","${element.Matchword.Mw_Option_C}","${element.Matchword.Mw_Option_D}","${element.Matchword.Mw_CorrectAnswer}","${element.SpellingMc.Mc_Option_A}","${element.SpellingMc.Mc_Option_B}","${element.SpellingMc.Mc_Option_C}","${element.SpellingMc.Mc_Option_D}","${element.SpellingMc.Mc_CorrectAnswer}");');
+    });
+  }
 
   Fetch_all_table_names() async {
     var all_tables = [];
@@ -163,15 +141,15 @@ class GlobalCubit extends Cubit<GlobalState> {
   }
 
   Future Fetch_Table_Data({table}) async {
-    // log(table);
     List<QuizMainModel> all_tables = [];
     var db = await openDatabase('QuizDb.db');
     var rawdata = await db.query('\'$table\'');
     rawdata.forEach((element) {
       all_tables.add(QuizMainModel.fromMap(element));
     });
-
-    return await all_tables;
+    // log('${rawdata[0].keys}');
+                                      
+    return await all_tables;                            
   }
 
   Future Fetch_all_word_packs({level}) async {
