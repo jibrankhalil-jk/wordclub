@@ -1,20 +1,65 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:localization/localization.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/others/routes.dart';
 import 'package:wordclub/others/theme.dart';
 import 'package:wordclub/views/home.dart';
+import 'package:wordclub/web/webhome.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   GetStorage _getx_storage = GetStorage();
+
+  if (kIsWeb) {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.web);
+  } else {
+    var databasesPath = await getApplicationDocumentsDirectory();
+    var path = ("${databasesPath.path}/QuizDb.db");
+    log(path.toString());
+    log(path.toString().replaceAll('app_flutter/', ''));
+
+    // Check if the database exists
+    var exists = await databaseExists(path);
+    if (!exists) {
+      // Should happen only the first time you launch your application
+      print("Creating new copy from asset");
+      // Make sure the parent directory exists
+      try {
+        await Directory(databasesPath.path).create(recursive: true);
+      } catch (_) {}
+
+      // Copy from asset
+      ByteData data = await rootBundle.load("assets/QuizDb.db");
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // Write and flush the bytes written
+      await File(path).writeAsBytes(bytes, flush: true).then((value) {
+        log('database saved in : ${value.path}');
+      });
+    } else {
+      print("Opening existing database");
+    }
+
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
+  }
+
   await _getx_storage.initStorage;
+
   String? App_language;
   try {
     App_language = await _getx_storage.read('App_Language');
@@ -65,14 +110,13 @@ class _SplashState extends State<Splash> {
                 if (locale?.languageCode == 'ur') {
                   return Locale('ur', 'PK');
                 }
-                // default language
                 return Locale('en', 'US');
               },
               locale: BlocProvider.of<GlobalCubit>(context).app_language,
               theme: theme(),
               themeMode: ThemeMode.light,
               // initialRoute: '/Home',
-              home: Home(),
+              home: kIsWeb ? WebHome() : Home(),
               onGenerateRoute: Routes.onGenerateRoute,
             );
           },

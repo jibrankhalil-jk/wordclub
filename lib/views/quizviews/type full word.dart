@@ -327,7 +327,11 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                   dialog(
                                                       title: 'Sentence',
                                                       detail: QuizList[index]
-                                                          .sentence);
+                                                          .sentence
+                                                          .replaceAll(
+                                                              QuizList[index]
+                                                                  .word,
+                                                              '____'));
                                                 }),
                                                 Bottom_Button(
                                                     context, 'Part of Speech',
@@ -373,7 +377,9 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                               1;
                                                         }
                                                         if (answercntrl.text
-                                                                .toUpperCase() ==
+                                                                .toUpperCase()
+                                                                .replaceAll(
+                                                                    ' ', '') ==
                                                             QuizList[index]
                                                                 .word
                                                                 .toUpperCase()) {
@@ -388,13 +394,10 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                                   onWillPop: () =>
                                                                       Future.value(
                                                                           false),
-                                                                  child:
-                                                                      AlertDialog(
-                                                                    title: Text(
+                                                                  child: Center(
+                                                                    child: Text(
                                                                       'Correct',
                                                                       style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
                                                                           fontSize:
                                                                               25,
                                                                           color:
@@ -423,8 +426,6 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                                     title: Text(
                                                                       'Incorrect',
                                                                       style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
                                                                           fontSize:
                                                                               25,
                                                                           color:
@@ -436,12 +437,10 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                                               index]
                                                                           .word,
                                                                       style: TextStyle(
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
                                                                           fontSize:
                                                                               25,
                                                                           color:
-                                                                              Colors.green),
+                                                                              Colors.white),
                                                                     ),
                                                                   ),
                                                                 );
@@ -462,6 +461,7 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                             }
                                                             Navigator.pop(
                                                                 context);
+                                                            answercntrl.clear();
                                                             pagecntrl
                                                                 .jumpToPage(
                                                                     index + 1);

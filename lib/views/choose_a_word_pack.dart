@@ -30,6 +30,8 @@ class _Choose_a_word_packState extends State<Choose_a_word_pack> {
 
   @override
   Widget build(BuildContext context) {
+    ;
+
     return Scaffold(
         body: Container(
             width: MediaQuery.of(context).size.width,
@@ -136,37 +138,43 @@ class _Choose_a_word_packState extends State<Choose_a_word_pack> {
                                                   if (widget.quiztype ==
                                                       'Flash Cards') {
                                                     return Flash_cards(
-                                                      bundletype: '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else if (widget.quiztype ==
                                                       'fill in the blanks') {
                                                     return Fill_In_TheBlanks(
-                                                      bundletype:  '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else if (widget.quiztype ==
                                                       'Match_The_Words') {
                                                     return Match_The_Words(
-                                                      bundletype:  '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else if (widget.quiztype ==
                                                       'Multiple_Choices') {
                                                     return Multiple_Choices(
-                                                      bundletype:  '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else if (widget.quiztype ==
                                                       'Type Full Word') {
                                                     return Type_Full_Word(
-                                                      bundletype:  '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else if (widget.quiztype ==
                                                       'Match_The_Vowel') {
                                                     return Match_The_Vowel(
-                                                      bundletype:  '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
+                                                      bundletype:
+                                                          '${GetStorage().read('App_Language') == 'en' ? datasnap.data[index].title : datasnap.data[index].urduname}',
                                                       quiztype: widget.quiztype,
                                                     );
                                                   } else {
