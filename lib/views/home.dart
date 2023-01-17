@@ -17,7 +17,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<GlobalCubit>(context).Fetch_all_table_names();
     var buttonswidth = MediaQuery.of(context).size.width / 1.5;
     var buttonsheight = MediaQuery.of(context).size.height / 9.5;
     return Scaffold(

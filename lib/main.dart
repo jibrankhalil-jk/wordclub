@@ -22,44 +22,34 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   GetStorage _getx_storage = GetStorage();
-
   if (kIsWeb) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.web);
   } else {
     var databasesPath = await getApplicationDocumentsDirectory();
     var path = ("${databasesPath.path}/QuizDb.db");
-    log(path.toString());
-    log(path.toString().replaceAll('app_flutter/', ''));
-
     // Check if the database exists
     var exists = await databaseExists(path);
     if (!exists) {
       // Should happen only the first time you launch your application
-      print("Creating new copy from asset");
-      // Make sure the parent directory exists
+      //Creating new copy from asset
       try {
+        // creating the dir
         await Directory(databasesPath.path).create(recursive: true);
       } catch (_) {}
-
       // Copy from asset
       ByteData data = await rootBundle.load("assets/QuizDb.db");
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      // Write and flush the bytes written
-      await File(path).writeAsBytes(bytes, flush: true).then((value) {
-        log('database saved in : ${value.path}');
-      });
+      // saving db from assets to app dir
+      await File(path).writeAsBytes(bytes, flush: true);
     } else {
-      print("Opening existing database");
+      // Opening existing database
     }
-
     await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
   }
 
   await _getx_storage.initStorage;
-
   String? App_language;
   try {
     App_language = await _getx_storage.read('App_Language');
