@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localization/localization.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -47,6 +48,7 @@ void main() async {
       // Opening existing database
     }
     await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
+    await MobileAds.instance.initialize();
   }
 
   await _getx_storage.initStorage;

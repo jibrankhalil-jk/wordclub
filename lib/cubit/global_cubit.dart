@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,7 @@ class GlobalCubit extends Cubit<GlobalState> {
   final GetStorage _getStorage = GetStorage();
   GlobalCubit() : super(GlobalInitial());
   TextToSpeech tts = TextToSpeech();
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Locale app_language =
       GetStorage().read('App_Language') == 'en' ? Locale('en') : Locale('ur');
@@ -128,5 +130,12 @@ class GlobalCubit extends Cubit<GlobalState> {
       all_tables.add(wordpackmodel.fromMap(element));
     });
     return all_tables;
+  }
+
+  getting_new_words_from_firebase() async {
+    var fbtables = await _firebaseFirestore.collection('Quizs').get();
+    fbtables.docs.forEach((element) {
+      
+    });
   }
 }

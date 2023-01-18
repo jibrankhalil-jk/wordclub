@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -23,7 +25,11 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
   int quiz_completed_status = 0;
   // var myindex = 1;
   var answercntrl = TextEditingController();
-  var pagecntrl = PageController();
+  var pagecntrl = PageController(initialPage: 0);
+  var current_blankselected = null;
+  var current_selected_vovel = '_';
+  var wordexpen = null;
+  var final_answer = null;
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +189,7 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                     controller: pagecntrl,
                                     itemCount: datasnap.data.length,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
+                                    itemBuilder: (context, mainindex) {
                                       return SingleChildScrollView(
                                         child: Column(
                                           children: [
@@ -211,7 +217,12 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                           Text('Pronunciation'
                                                               .i18n()),
                                                           Text(
-                                                            QuizList[index]
+                                                            QuizList[mainindex ==
+                                                                        0
+                                                                    ? mainindex
+                                                                    : pagecntrl
+                                                                        .page!
+                                                                        .toInt()]
                                                                 .word,
                                                             style: TextStyle(
                                                                 color: Colors
@@ -223,50 +234,107 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                           SizedBox(
                                                             height: 9,
                                                           ),
-                                                          Container(
-                                                            // height: MediaQuery.of(
-                                                            //             context)
-                                                            //         .size
-                                                            //         .width /
-                                                            //     7,
-                                                            width:
-                                                                double.infinity,
-                                                            child: ListView
-                                                                .builder(
-                                                                    itemCount: QuizList[
-                                                                            index]
-                                                                        .word
-                                                                        .length,
-                                                                    scrollDirection:
-                                                                        Axis
-                                                                            .horizontal,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            index) {
-                                                                      return Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(left: 5),
-                                                                        child:
-                                                                            Container(
-                                                                          width:
-                                                                              MediaQuery.of(context).size.width / 10,
-                                                                          child: Center(
-                                                                              child: Text(
-                                                                            QuizList[index].word.toUpperCase()[index],
-                                                                            // 'a',
-                                                                            style: TextStyle(
-                                                                              fontSize: MediaQuery.of(context).size.width / 17,
-                                                                                color: Colors.white,
-                                                                                fontWeight: FontWeight.w500),
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                          )),
-                                                                          decoration: BoxDecoration(
-                                                                              color: Colors.green,
-                                                                              borderRadius: BorderRadius.circular(6)),
-                                                                        ),
-                                                                      );
-                                                                    }),
+                                                          BlocBuilder<
+                                                              GlobalCubit,
+                                                              GlobalState>(
+                                                            builder: (context,
+                                                                state) {
+                                                              var length = QuizList[mainindex ==
+                                                                          0
+                                                                      ? mainindex
+                                                                      : pagecntrl
+                                                                          .page!
+                                                                          .toInt()]
+                                                                  .word
+                                                                  .length;
+                                                              var size = length <=
+                                                                      6
+                                                                  ? MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width /
+                                                                      8
+                                                                  : length == 7
+                                                                      ? MediaQuery.of(context)
+                                                                              .size
+                                                                              .width /
+                                                                          9.5
+                                                                      : length ==
+                                                                              8
+                                                                          ? MediaQuery.of(context).size.width /
+                                                                              10.5
+                                                                          : length == 9
+                                                                              ? MediaQuery.of(context).size.width / 12
+                                                                              : length == 10
+                                                                                  ? MediaQuery.of(context).size.width / 13.5
+                                                                                  : length == 11
+                                                                                      ? MediaQuery.of(context).size.width / 14.8
+                                                                                      : MediaQuery.of(context).size.width / 8;
+
+                                                              return Container(
+                                                                height: size,
+                                                                width: double
+                                                                    .infinity,
+                                                                child: ListView
+                                                                    .builder(
+                                                                        itemCount:
+                                                                            length,
+                                                                        scrollDirection:
+                                                                            Axis
+                                                                                .horizontal,
+                                                                        itemBuilder:
+                                                                            (context,
+                                                                                subindex) {
+                                                                          if (wordexpen ==
+                                                                              null) {
+                                                                            wordexpen =
+                                                                                QuizList[mainindex == 0 ? mainindex : pagecntrl.page!.toInt()].word.replaceAll(RegExp('[aeiou]'), '_').split('');
+                                                                          }
+                                                                          if (current_blankselected ==
+                                                                              subindex) {
+                                                                            wordexpen[subindex] =
+                                                                                current_selected_vovel;
+                                                                          }
+                                                                          final_answer =
+                                                                              wordexpen.toString();
+                                                                          log(wordexpen
+                                                                              .toString());
+
+                                                                          return Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 2),
+                                                                            child:
+                                                                                InkWell(
+                                                                              onTap: () {
+                                                                                setState(() {
+                                                                                  if (wordexpen[subindex].toString() == '_') {
+                                                                                    current_blankselected = subindex;
+                                                                                  }
+                                                                                });
+                                                                              },
+                                                                              child: Container(
+                                                                                width: size,
+                                                                                // ignore: sort_child_properties_last
+                                                                                child: Center(
+                                                                                    child: Text(
+                                                                                  wordexpen[subindex].toString(),
+                                                                                  // 'a',
+                                                                                  style: TextStyle(fontSize: MediaQuery.of(context).size.width / 17, color: Colors.white, fontWeight: FontWeight.w500),
+                                                                                  textAlign: TextAlign.center,
+                                                                                )),
+                                                                                decoration: BoxDecoration(
+                                                                                    color: wordexpen[subindex].toString() == '_'
+                                                                                        ? current_blankselected == subindex
+                                                                                            ? Colors.blue
+                                                                                            : Colors.grey
+                                                                                        : Colors.green,
+                                                                                    borderRadius: BorderRadius.circular(6)),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }),
+                                                              );
+                                                            },
                                                           ),
                                                         ],
                                                       )),
@@ -280,7 +348,8 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                                   GlobalCubit>(
                                                               context)
                                                           .speak_with_tts(
-                                                        QuizList[index].word,
+                                                        QuizList[mainindex]
+                                                            .word,
                                                       );
                                                     },
                                                     child: Container(
@@ -338,24 +407,28 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                     context, 'Defination', () {
                                                   dialog(
                                                       title: 'Defination',
-                                                      detail: QuizList[index]
-                                                          .defination);
+                                                      detail:
+                                                          QuizList[mainindex]
+                                                              .defination);
                                                 }),
                                                 Bottom_Button(context, 'Origin',
                                                     () {
                                                   dialog(
                                                       title: 'Origin',
-                                                      detail: QuizList[index]
-                                                          .origin);
+                                                      detail:
+                                                          QuizList[mainindex]
+                                                              .origin);
                                                 }),
                                                 Bottom_Button(
                                                     context, 'Sentence', () {
                                                   dialog(
                                                       title: 'Sentence',
-                                                      detail: QuizList[index]
+                                                      detail: QuizList[
+                                                              mainindex]
                                                           .sentence
                                                           .replaceAll(
-                                                              QuizList[index]
+                                                              QuizList[
+                                                                      mainindex]
                                                                   .word,
                                                               '____'));
                                                 }),
@@ -364,8 +437,9 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                     () {
                                                   dialog(
                                                       title: 'Part of Speech',
-                                                      detail: QuizList[index]
-                                                          .part_of_speech);
+                                                      detail:
+                                                          QuizList[mainindex]
+                                                              .part_of_speech);
                                                 }),
                                               ],
                                             ),
@@ -393,13 +467,42 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                       itemCount: 4,
                                                       scrollDirection:
                                                           Axis.horizontal,
-                                                      itemBuilder:
-                                                          (context, index) {
+                                                      itemBuilder: (context,
+                                                          vowelindex) {
                                                         return InkWell(
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(5),
-                                                          onTap: () {},
+                                                          onTap: () {
+                                                            // log(vowelindex
+                                                            //     .toString());
+                                                            setState(() {
+                                                              if (vowelindex ==
+                                                                  0) {
+                                                                current_selected_vovel =
+                                                                    'A';
+                                                              } else if (vowelindex ==
+                                                                  1) {
+                                                                current_selected_vovel =
+                                                                    'E';
+                                                              } else if (vowelindex ==
+                                                                  2) {
+                                                                current_selected_vovel =
+                                                                    'I';
+                                                              } else if (vowelindex ==
+                                                                  3) {
+                                                                current_selected_vovel =
+                                                                    'O';
+                                                              } else if (vowelindex ==
+                                                                  4) {
+                                                                current_selected_vovel =
+                                                                    'U';
+                                                              } else {
+                                                                current_selected_vovel =
+                                                                    '_';
+                                                              }
+                                                            });
+                                                          },
                                                           child: Container(
                                                             margin:
                                                                 EdgeInsets.only(
@@ -411,14 +514,15 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                                 7,
                                                             child: Center(
                                                                 child: Text(
-                                                              index == 0
+                                                              vowelindex == 0
                                                                   ? 'A'
-                                                                  : index == 1
+                                                                  : vowelindex ==
+                                                                          1
                                                                       ? 'E'
-                                                                      : index ==
+                                                                      : vowelindex ==
                                                                               2
                                                                           ? 'I'
-                                                                          : index == 3
+                                                                          : vowelindex == 3
                                                                               ? 'O'
                                                                               : 'U',
                                                               style: TextStyle(
@@ -449,7 +553,53 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                 ),
                                                 Spacer(),
                                                 InkWell(
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    if (final_answer
+                                                            .toString()
+                                                            .contains('_') ==
+                                                        false) {
+                                                      if (final_answer
+                                                              .toString()
+                                                              .replaceAll(
+                                                                  ' ', '')
+                                                              .replaceAll(
+                                                                  ',', '')
+                                                              .replaceAll(
+                                                                  '[', '')
+                                                              .replaceAll(
+                                                                  ']', '')
+                                                              .toLowerCase() ==
+                                                          QuizList[pagecntrl
+                                                                  .page!
+                                                                  .toInt()]
+                                                              .word
+                                                              .toLowerCase()) {
+                                                        setState(() {
+                                                          current_blankselected =
+                                                              null;
+                                                          current_selected_vovel =
+                                                              '_';
+                                                          wordexpen = null;
+                                                          final_answer = null;
+                                                          pagecntrl.jumpToPage(
+                                                              mainindex + 1);
+                                                        });
+
+                                                        BlocProvider.of<
+                                                                    GlobalCubit>(
+                                                                context)
+                                                            .emit(
+                                                                GlobalInitial());
+                                                      }
+                                                      log(final_answer
+                                                          .toString()
+                                                          .replaceAll(' ', '')
+                                                          .replaceAll(',', '')
+                                                          .replaceAll('[', '')
+                                                          .replaceAll(']', '')
+                                                          .toLowerCase());
+                                                    }
+                                                  },
                                                   child: Container(
                                                     margin: EdgeInsets.only(
                                                         right: 20),
