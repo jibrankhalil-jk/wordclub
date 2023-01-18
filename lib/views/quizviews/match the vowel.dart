@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -574,6 +575,71 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                                   .toInt()]
                                                               .word
                                                               .toLowerCase()) {
+                                                        log('correct');
+                                                        showDialog(
+                                                            barrierDismissible:
+                                                                false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return WillPopScope(
+                                                                onWillPop: () =>
+                                                                    Future.value(
+                                                                        false),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'Correct',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            25,
+                                                                        color: Colors
+                                                                            .green),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            });
+                                                      } else {
+                                                        log('Incorrect');
+                                                        showDialog(
+                                                            barrierDismissible:
+                                                                false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return WillPopScope(
+                                                                onWillPop: () =>
+                                                                    Future.value(
+                                                                        false),
+                                                                child:
+                                                                    AlertDialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                  title: Text(
+                                                                    'Incorrect',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            25,
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  content: Text(
+                                                                    QuizList[
+                                                                            mainindex]
+                                                                        .word,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            25,
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            });
+                                                      }
+                                                      Timer.periodic(
+                                                          Duration(seconds: 2),
+                                                          (timer) {
+                                                        timer.cancel();
+
                                                         setState(() {
                                                           current_blankselected =
                                                               null;
@@ -583,14 +649,17 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                           final_answer = null;
                                                           pagecntrl.jumpToPage(
                                                               mainindex + 1);
+                                                          if (quiz_completed_status <=
+                                                              QuizList.length) {
+                                                            quiz_completed_status++;
+                                                          }
+                                                          Navigator.pop(
+                                                              context);
+                                                          answercntrl.clear();
+                                                          pagecntrl.jumpToPage(
+                                                              mainindex + 1);
                                                         });
-
-                                                        BlocProvider.of<
-                                                                    GlobalCubit>(
-                                                                context)
-                                                            .emit(
-                                                                GlobalInitial());
-                                                      }
+                                                      });
                                                       log(final_answer
                                                           .toString()
                                                           .replaceAll(' ', '')
