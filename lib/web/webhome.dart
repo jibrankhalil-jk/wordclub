@@ -6,6 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wordclub/cubit/global_cubit.dart';
+import 'package:wordclub/models/database_main_model.dart';
+import 'package:wordclub/others/constants.dart';
+
+import '../models/wordpackmodel.dart';
 
 class WebHome extends StatefulWidget {
   const WebHome({super.key});
@@ -34,8 +41,6 @@ class _WebHomeState extends State<WebHome> {
       body: FutureBuilder(
           future: gettingtables(),
           builder: (context, AsyncSnapshot datasnap) {
-            log('${datasnap.data}');
-
             if (datasnap.hasData) {
               return ListView.builder(
                   itemCount: datasnap.data.length,
@@ -224,13 +229,20 @@ class _Tableview extends State<Tableview> {
   var tablel, type;
   FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   @override
+  late List<QuizMainModel> QuizList;
+
   gettingtables() async {
-    var data = await _firebaseFirestore
+    List<QuizMainModel> all_tables = [];
+    var rawtablesdata = await _firebaseFirestore
         .collection('Quizs')
         .doc(tablel)
         .collection(type)
         .get();
-    return data.docs;
+    rawtablesdata.docs.forEach((element) {
+      all_tables.add(QuizMainModel.fromMap(element.data()));
+    });
+
+    return all_tables;
   }
 
   Widget build(BuildContext context) {
@@ -245,16 +257,31 @@ class _Tableview extends State<Tableview> {
       body: FutureBuilder(
           future: gettingtables(),
           builder: (context, AsyncSnapshot datasnap) {
-            log('${datasnap.data}');
             if (datasnap.hasData) {
+              // if (QuizList.isEmpty) {
+              QuizList = datasnap.data;
+              // }
+
               return ListView.builder(
-                  itemCount: datasnap.data.length,
+                  itemCount: QuizList.length,
                   itemBuilder: ((context, index) {
-                    return ListTile(
-                      title: Text(datasnap.data[index]['word']),
-                      subtitle: Text(datasnap.data[index]['defination']),
-                      leading: CircleAvatar(
-                        child: Text('${index + 1}'),
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Wordview(
+                                      table: tablel,
+                                      word: QuizList[index].word,
+                                      type: type,
+                                    )));
+                      },
+                      child: ListTile(
+                        title: Text(QuizList[index].word),
+                        subtitle: Text(QuizList[index].defination),
+                        leading: CircleAvatar(
+                          child: Text('${index + 1}'),
+                        ),
                       ),
                     );
                   }));
@@ -648,6 +675,506 @@ class _Tableview extends State<Tableview> {
         },
         child: Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class Wordview extends StatelessWidget {
+  Wordview({this.word, this.table, this.type});
+  var word, table, type;
+
+  @override
+  Widget build(BuildContext context) {
+    QuizMainModel? QuizList;
+    FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+    gettingtables() async {
+      QuizMainModel all_tables;
+      var rawtablesdata = await _firebaseFirestore
+          .collection('Quizs')
+          .doc(table)
+          .collection(type)
+          .doc(word)
+          .get();
+      // rawtablesdata.docs.forEach((element) {
+      //   all_tables.add(QuizMainModel.fromMap(element.data()));
+      // });
+      all_tables = QuizMainModel.fromMap(rawtablesdata.data());
+
+      log(all_tables.toString());
+
+      return all_tables;
+    }
+
+    return Scaffold(
+      body: FutureBuilder(
+          future: gettingtables(),
+          builder: (context, AsyncSnapshot datasnap) {
+            if (datasnap.hasData) {
+              QuizList = datasnap.data;
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 14,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        BlocProvider.of<GlobalCubit>(context)
+                            .speak_with_tts(QuizList!.word);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        height: MediaQuery.of(context).size.width / 4,
+                        child: Center(
+                            child: SvgPicture.asset(
+                          AppAssets().volume,
+                          height: MediaQuery.of(context).size.width / 9,
+                          width: MediaQuery.of(context).size.width / 9,
+                        )),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.black),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(300)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      '${QuizList!.word}',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 19),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '/${QuizList!.pronunciation}/',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 19),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 14,
+                    ),
+                    Container(
+                      // height: MediaQuery.of(context).size.height / 4,
+                      width: MediaQuery.of(context).size.width,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Origin'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('${QuizList!.origin}'),
+                                ),
+                              ),
+                              Text('Part of Speech'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('${QuizList!.part_of_speech}'),
+                                ),
+                              ),
+                              Text('Defination'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('${QuizList!.defination}'),
+                                ),
+                              ),
+                              Text('Sentences'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('${QuizList!.sentence}'),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 20,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                  child: Text(
+                                      'What word has the following defination')),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Text('Option A'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.Matchword.Mw_CorrectAnswer ==
+                                          '1'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.Matchword.Mw_Option_A),
+                                ),
+                              ),
+                              Text('Option B'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.Matchword.Mw_CorrectAnswer ==
+                                          '2'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.Matchword.Mw_Option_B),
+                                ),
+                              ),
+                              Text('Option C'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.Matchword.Mw_CorrectAnswer ==
+                                          '3'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.Matchword.Mw_Option_C),
+                                ),
+                              ),
+                              Text('Option D'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.Matchword.Mw_CorrectAnswer ==
+                                          '4'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.Matchword.Mw_Option_D),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 20,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                  child: Text(
+                                      QuizList!.multiplechoices.Mcq_Question)),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Text('Option A'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.multiplechoices
+                                              .Mcq_CorrectAnswer ==
+                                          '1'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      QuizList!.multiplechoices.Mcq_Option_A),
+                                ),
+                              ),
+                              Text('Option B'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.multiplechoices
+                                              .Mcq_CorrectAnswer ==
+                                          '2'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      QuizList!.multiplechoices.Mcq_Option_B),
+                                ),
+                              ),
+                              Text('Option C'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.multiplechoices
+                                              .Mcq_CorrectAnswer ==
+                                          '3'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      QuizList!.multiplechoices.Mcq_Option_C),
+                                ),
+                              ),
+                              Text('Option D'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.multiplechoices
+                                              .Mcq_CorrectAnswer ==
+                                          '4'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                      QuizList!.multiplechoices.Mcq_Option_D),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 20,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                  child: Text('What is the correct Spelling')),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Text('Option A'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: QuizList!.Matchword.Mw_CorrectAnswer ==
+                                          '1'
+                                      ? Colors.green
+                                      : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.SpellingMc.Mc_Option_A),
+                                ),
+                              ),
+                              Text('Option B'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color:
+                                      QuizList!.SpellingMc.Mc_CorrectAnswer ==
+                                              '2'
+                                          ? Colors.green
+                                          : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.SpellingMc.Mc_Option_B),
+                                ),
+                              ),
+                              Text('Option C'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color:
+                                      QuizList!.SpellingMc.Mc_CorrectAnswer ==
+                                              '3'
+                                          ? Colors.green
+                                          : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.SpellingMc.Mc_Option_C),
+                                ),
+                              ),
+                              Text('Option D'),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color:
+                                      QuizList!.SpellingMc.Mc_CorrectAnswer ==
+                                              '4'
+                                          ? Colors.green
+                                          : Colors.black12,
+                                ),
+                                // height: 40,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(QuizList!.SpellingMc.Mc_Option_D),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 3,
+                    )
+                  ],
+                ),
+              );
+            } else if (datasnap.connectionState == ConnectionState.waiting) {
+              return Center(child: CupertinoActivityIndicator());
+            } else {
+              return Center(child: Text('No Data'));
+            }
+          }),
     );
   }
 }

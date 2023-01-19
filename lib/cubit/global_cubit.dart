@@ -69,18 +69,18 @@ class GlobalCubit extends Cubit<GlobalState> {
   }
 
   Fetch_all_table_names() async {
-    var all_tables = [];
+    List<String>? all_tables;
     var databasesPath = await getApplicationDocumentsDirectory();
     var path = ("${databasesPath.path}/QuizDb.db");
     var db = await openDatabase(path, readOnly: true);
     var alltablesraw = await db
         .rawQuery('''SELECT type,name,tbl_name FROM "main".sqlite_master;''');
-    alltablesraw.forEach((element) {
+    for (var element in alltablesraw) {
       if (element['type'] == 'table') {
-        all_tables.add(element['tbl_name']);
+        all_tables!.add(element['tbl_name'].toString());
       }
-    });
-    return alltablesraw;
+    }
+    return all_tables;
   }
 
   Fetch_Quizs_names({level}) async {
@@ -100,22 +100,65 @@ class GlobalCubit extends Cubit<GlobalState> {
     return all_tables;
   }
 
-  Future Fetch_Table_Data({table}) async {
+  Future Fetch_Table_Data({table, type}) async {
+    var type = await _getStorage.read('App_Language');
+
     List<QuizMainModel> all_tables = [];
+    List all_local_tables = [];
+    var rawdata;
     var databasesPath = await getApplicationDocumentsDirectory();
     var path = ("${databasesPath.path}/QuizDb.db");
     var db = await openDatabase(path, readOnly: true);
-    var rawdata = await db
-        .rawQuery('SELECT "_rowid_",* FROM "main"."$table" LIMIT 0, 49999;');
-    rawdata.forEach((element) {
-      all_tables.add(QuizMainModel.fromMap(element));
-    });
+
+    try {
+      var rawlocaltables =
+          await db.rawQuery('''SELECT type,name FROM "main".sqlite_master ;''');
+      rawlocaltables.forEach((element) {
+        all_local_tables.add(element['name'].toString());
+      });
+    } catch (e) {}
+
+    if (all_local_tables!.contains(table)) {
+      log('local table');
+      rawdata = await db
+          .rawQuery('SELECT "_rowid_",* FROM "main"."$table" LIMIT 0, 49999;');
+      for (var element in rawdata) {
+        all_tables.add(QuizMainModel.fromMap(element));
+      }
+    } else {
+      log('firebase table');
+      var firebaseraw_data = await _firebaseFirestore
+          .collection('Quizs')
+          .doc('$table')
+          .collection('${type == 'en' ? 'EnglishTableNAme' : 'UrduTableNAme'}')
+          .get();
+      firebaseraw_data.docs.forEach((element) {
+        all_tables.add(QuizMainModel.fromMap(element.data()));
+      });
+    }
+
     return await all_tables;
   }
 
   Future Fetch_all_word_packs({level}) async {
     List<wordpackmodel> all_tables = [];
     var rawtablesdata;
+    var firebasetablse;
+
+    log('running');
+
+    try {
+      if (level != null) {
+        firebasetablse = await _firebaseFirestore
+            .collection('Quizs')
+            .where('LevelTableNAme', isEqualTo: '$level')
+            .get();
+        log(firebasetablse.docs.toString());
+        log(level);
+      } else {
+        firebasetablse = await _firebaseFirestore.collection('Quizs').get();
+      }
+    } catch (e) {}
     var databasesPath = await getApplicationDocumentsDirectory();
     var path = ("${databasesPath.path}/QuizDb.db");
     var db = await openDatabase(path, readOnly: true);
@@ -129,13 +172,23 @@ class GlobalCubit extends Cubit<GlobalState> {
     rawtablesdata.forEach((element) {
       all_tables.add(wordpackmodel.fromMap(element));
     });
+    try {
+      firebasetablse.docs.forEach((element) {
+        log(element.data().toString());
+        all_tables.add(wordpackmodel(
+            level: element.data()['LevelTableNAme'],
+            urduname: element.data()['UrduTableNAme'],
+            title: element.data()['EnglishTableNAme']));
+      });
+    } catch (e) {}
+
     return all_tables;
   }
 
-  getting_new_words_from_firebase() async {
-    var fbtables = await _firebaseFirestore.collection('Quizs').get();
-    fbtables.docs.forEach((element) {
-      
-    });
-  }
+  // getting_new_words_from_firebase() async {
+  //   var fbtables = await _firebaseFirestore.collection('Quizs').get();
+  //   fbtables.docs.forEach((element) {
+
+  //   });
+  // }
 }

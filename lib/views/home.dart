@@ -1,10 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localization/localization.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:wordclub/services/admobads.dart';
@@ -27,9 +33,33 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _createBannerAd();
     _createinterestialadd();
     _createrewardedadd();
+  }
+
+  initialdbcreating() async {
+    var databasesPath = await getApplicationDocumentsDirectory();
+    var path = ("${databasesPath.path}/QuizDb.db");
+    // Check if the database exists
+    var exists = await databaseExists(path);
+    if (!exists) {
+      // Should happen only the first time you launch your application
+      //Creating new copy from asset
+      try {
+        // creating the dir
+        await Directory(databasesPath.path).create(recursive: true);
+      } catch (_) {}
+      // Copy from asset
+      ByteData data = await rootBundle.load("assets/QuizDb.db");
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // saving db from assets to app dir
+      await File(path).writeAsBytes(bytes, flush: true);
+    } else {
+      // Opening existing database
+    }
   }
 
   void _createBannerAd() {

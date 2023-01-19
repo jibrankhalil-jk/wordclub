@@ -189,11 +189,6 @@ class Choose_a_quiz extends StatelessWidget {
                                       ? Spellings_items[index].Title
                                       : Vocabularly_items[index].Title,
                                 ),
-                                Text(
-                                  type == 'Spellings'
-                                      ? Spellings_items[index].Progress
-                                      : Vocabularly_items[index].Progress,
-                                ),
                               ],
                             ),
                           ),

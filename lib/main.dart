@@ -27,6 +27,8 @@ void main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.web);
   } else {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
+    await MobileAds.instance.initialize();
     var databasesPath = await getApplicationDocumentsDirectory();
     var path = ("${databasesPath.path}/QuizDb.db");
     // Check if the database exists
@@ -47,8 +49,6 @@ void main() async {
     } else {
       // Opening existing database
     }
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.android);
-    await MobileAds.instance.initialize();
   }
 
   await _getx_storage.initStorage;

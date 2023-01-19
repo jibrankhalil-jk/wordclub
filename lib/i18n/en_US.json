@@ -27,9 +27,11 @@
   "Origin": "Origin",
   "Defination": "Defination",
   "Sentences": "Sentences",
+  "Sentence":"Sentence",
   "Part of Speech": "Part of Speech",
   "Resume": "Resume",
   "Quit": "Quit",
   "Are you sure want to exit?": "Are you sure want to exit?",
+  "Pronunciation":"Pronunciation",
   "Correct Spelling is":"Correct Spelling is"
 }
