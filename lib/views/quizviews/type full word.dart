@@ -10,8 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:wordclub/cubit/global_cubit.dart';
+import 'package:wordclub/models/wordpackmodel.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:localization/localization.dart';
+import 'package:wordclub/widgets/result.dart';
 
 import '../../models/database_main_model.dart';
 
@@ -25,6 +27,8 @@ class Type_Full_Word extends StatefulWidget {
 
 class _Type_Full_WordState extends State<Type_Full_Word> {
   List<QuizMainModel> QuizList = [];
+  List<QuizMainModel> WrongList = [];
+
   int quiz_completed_status = 0;
   // var myindex = 1;
   var answercntrl = TextEditingController();
@@ -366,95 +370,52 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         12)),
-                                                    onPressed: () {
-                                                      if (answercntrl
-                                                          .text.isNotEmpty) {
-                                                        if (quiz_completed_status <=
-                                                                QuizList
-                                                                    .length ==
-                                                            true) {
-                                                          quiz_completed_status +
-                                                              1;
-                                                        }
-                                                        if (answercntrl.text
-                                                                .toUpperCase()
-                                                                .replaceAll(
-                                                                    ' ', '') ==
-                                                            QuizList[index]
-                                                                .word
-                                                                .toUpperCase()) {
-                                                          log('correct');
-                                                          showDialog(
-                                                              barrierDismissible:
-                                                                  false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return WillPopScope(
-                                                                  onWillPop: () =>
-                                                                      Future.value(
-                                                                          false),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      'Correct',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              25,
-                                                                          color:
-                                                                              Colors.green),
-                                                                    ),
+                                                    onPressed: () async {
+                                                      // if (answercntrl
+                                                      //     .text.isNotEmpty) {
+                                                      // if (quiz_completed_status <
+                                                      //         QuizList.length ==
+                                                      //     true) {
+                                                      //   quiz_completed_status +
+                                                      //       1;
+                                                      // }
+                                                      if (answercntrl.text
+                                                              .toUpperCase()
+                                                              .replaceAll(
+                                                                  ' ', '') ==
+                                                          QuizList[index]
+                                                              .word
+                                                              .toUpperCase()) {
+                                                        log('correct');
+                                                        showDialog(
+                                                            barrierDismissible:
+                                                                false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return WillPopScope(
+                                                                onWillPop: () =>
+                                                                    Future.value(
+                                                                        false),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    'Correct',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            25,
+                                                                        color: Colors
+                                                                            .green),
                                                                   ),
-                                                                );
-                                                              });
-                                                        } else {
-                                                          log('Incorrect');
-                                                          showDialog(
-                                                              barrierDismissible:
-                                                                  false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return WillPopScope(
-                                                                  onWillPop: () =>
-                                                                      Future.value(
-                                                                          false),
-                                                                  child:
-                                                                      AlertDialog(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .red,
-                                                                    title: Text(
-                                                                      'Incorrect',
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              25,
-                                                                          color:
-                                                                              Colors.white),
-                                                                    ),
-                                                                    content:
-                                                                        Text(
-                                                                      QuizList[
-                                                                              index]
-                                                                          .word,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              25,
-                                                                          color:
-                                                                              Colors.white),
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              });
-                                                        }
-
+                                                                ),
+                                                              );
+                                                            });
                                                         Timer.periodic(
                                                             Duration(
-                                                                seconds: 2),
+                                                                seconds: 1),
                                                             (timer) {
                                                           timer.cancel();
 
                                                           setState(() {
-                                                            if (quiz_completed_status <=
+                                                            if (quiz_completed_status <
                                                                 QuizList
                                                                     .length) {
                                                               quiz_completed_status++;
@@ -467,10 +428,75 @@ class _Type_Full_WordState extends State<Type_Full_Word> {
                                                                     index + 1);
                                                           });
                                                         });
-                                                        log(quiz_completed_status
-                                                            .toString());
-                                                        log(QuizList.length
-                                                            .toString());
+                                                      } else {
+                                                        log('Incorrect');
+                                                        await BlocProvider.of<
+                                                                    GlobalCubit>(
+                                                                context)
+                                                            .play_tick_sound();
+                                                        showDialog(
+                                                            barrierDismissible:
+                                                                false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return WillPopScope(
+                                                                onWillPop: () =>
+                                                                    Future.value(
+                                                                        false),
+                                                                child:
+                                                                    AlertDialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  content: Text(
+                                                                    "That was incorrect.\nThe correct answer was ${QuizList[index].word}.\n${answercntrl.text.isEmpty == true ? 'Your answer was empty' : ''}",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: Colors
+                                                                            .black),
+                                                                  ),
+                                                                  actions: [
+                                                                    MaterialButton(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        onPressed:
+                                                                            () {
+                                                                          setState(
+                                                                              () {
+                                                                            if (quiz_completed_status <
+                                                                                QuizList.length) {
+                                                                              quiz_completed_status++;
+                                                                              WrongList.add(QuizList[index]);
+                                                                            }
+                                                                            Navigator.pop(context);
+                                                                            answercntrl.clear();
+                                                                            pagecntrl.jumpToPage(index +
+                                                                                1);
+                                                                          });
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          'ok',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ))
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            });
+                                                      }
+
+                                                      if (QuizList.length ==
+                                                          quiz_completed_status) {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) =>
+                                                                Result(
+                                                                    all:
+                                                                        QuizList,
+                                                                    wrong:
+                                                                        WrongList));
                                                       }
                                                     },
                                                     child: Text(

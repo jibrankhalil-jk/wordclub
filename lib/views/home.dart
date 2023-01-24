@@ -1,17 +1,11 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:localization/localization.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:wordclub/services/admobads.dart';
 
@@ -31,7 +25,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _createBannerAd();
@@ -67,7 +60,7 @@ class _HomeState extends State<Home> {
         size: AdSize.fullBanner,
         adUnitId: AdMobServices.banneradduintid!,
         listener: AdMobServices.bannerAdListener,
-        request: AdRequest())
+        request: const AdRequest())
       ..load();
   }
 
@@ -138,17 +131,17 @@ class _HomeState extends State<Home> {
                 child: Center(
                     child: Column(
                   children: [
-                    Spacer(
+                    const Spacer(
                       flex: 2,
                     ),
-                    Text(
+                    const Text(
                       'Word Club',
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w500,
                           color: AppPrimaryColor),
                     ),
-                    Spacer(
+                    const Spacer(
                       flex: 3,
                     ),
                     GestureDetector(

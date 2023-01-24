@@ -12,6 +12,7 @@ import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/models/database_main_model.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:localization/localization.dart';
+import 'package:wordclub/widgets/result.dart';
 
 class Match_The_Words extends StatefulWidget {
   Match_The_Words({this.bundletype, this.quiztype});
@@ -23,6 +24,7 @@ class Match_The_Words extends StatefulWidget {
 
 class _Match_The_WordsState extends State<Match_The_Words> {
   List<QuizMainModel> QuizList = [];
+  List<QuizMainModel> WrongList = [];
 
   int quiz_completed_status = 1;
   var myindex = 1;
@@ -34,14 +36,19 @@ class _Match_The_WordsState extends State<Match_The_Words> {
     checkoption(index, button) {
       optchosed = button;
 
-      if (index != QuizList.length) {
+      if (quiz_completed_status < QuizList.length) {
         if (checked == false) {
           setState(() {
+            if (QuizList[index].Matchword.Mw_CorrectAnswer != '$optchosed') {
+              BlocProvider.of<GlobalCubit>(context).play_tick_sound();
+              WrongList.add(QuizList[index]);
+            }
             checked = true;
           });
           Timer.periodic(Duration(seconds: 1), (timer) {
             timer.cancel();
             setState(() {
+             
               quiz_completed_status++;
               pageviewcntrl.jumpToPage((index + 1));
               checked = false;
@@ -52,7 +59,7 @@ class _Match_The_WordsState extends State<Match_The_Words> {
       } else {
         showDialog(
             context: context,
-            builder: (context) => AlertDialog(title: Text('Finished')));
+            builder: (context) => Result(all: QuizList, wrong: WrongList));
       }
     }
 

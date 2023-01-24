@@ -11,6 +11,7 @@ import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/models/database_main_model.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:localization/localization.dart';
+import 'package:wordclub/widgets/result.dart';
 
 class Multiple_Choices extends StatefulWidget {
   Multiple_Choices({this.bundletype, this.quiztype});
@@ -22,6 +23,7 @@ class Multiple_Choices extends StatefulWidget {
 
 class _Multiple_ChoicesState extends State<Multiple_Choices> {
   List<QuizMainModel> QuizList = [];
+  List<QuizMainModel> WrongList = [];
 
   int quiz_completed_status = 1;
   var myindex = 1;
@@ -32,16 +34,28 @@ class _Multiple_ChoicesState extends State<Multiple_Choices> {
   Widget build(BuildContext context) {
     checkoption(index, button) {
       optchosed = button;
-
+      if (QuizList.length == quiz_completed_status) {
+        showDialog(
+            context: context,
+            builder: (context) => Result(all: QuizList, wrong: WrongList));
+      }
       if (index != QuizList.length) {
         if (checked == false) {
           setState(() {
+            if (QuizList[index].Matchword.Mw_CorrectAnswer != '$optchosed') {
+              BlocProvider.of<GlobalCubit>(context).play_tick_sound();
+              WrongList.add(QuizList[index]);
+            }
             checked = true;
           });
-          Timer.periodic(Duration(seconds: 1), (timer) {
+          Timer.periodic(Duration(milliseconds: 500), (timer) {
             timer.cancel();
             setState(() {
-              quiz_completed_status++;
+              if (quiz_completed_status < QuizList.length) {
+                quiz_completed_status++;
+                WrongList.add(QuizList[index]);
+              }
+
               pageviewcntrl.jumpToPage((index + 1));
               checked = false;
               optchosed = 0;
@@ -51,7 +65,7 @@ class _Multiple_ChoicesState extends State<Multiple_Choices> {
       } else {
         showDialog(
             context: context,
-            builder: (context) => AlertDialog(title: Text('Finished')));
+            builder: (context) => Result(all: QuizList, wrong: WrongList));
       }
     }
 
@@ -306,7 +320,7 @@ class _Multiple_ChoicesState extends State<Multiple_Choices> {
                                                                       index, 1);
                                                                 },
                                                                 child: Container(
-                                                                     margin: EdgeInsets.symmetric(vertical: 13),
+                                                                    margin: EdgeInsets.symmetric(vertical: 13),
                                                                     width: MediaQuery.of(context).size.width / 1.4,
                                                                     child: Center(
                                                                         child: Text(

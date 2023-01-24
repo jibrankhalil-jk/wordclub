@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:wordclub/cubit/global_cubit.dart';
 import 'package:wordclub/models/database_main_model.dart';
@@ -203,6 +204,60 @@ class _Flash_cardsState extends State<Flash_cards> {
                                                           .size
                                                           .height /
                                                       14,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    FutureBuilder(
+                                                        future: _checkbookmark(
+                                                            index),
+                                                        builder: (context,
+                                                            AsyncSnapshot
+                                                                _data) {
+                                                          if (_data.hasData) {
+                                                            log('bookmarks >> ' +
+                                                                _data.data
+                                                                    .toString());
+                                                            return IconButton(
+                                                              icon: Icon(_data
+                                                                          .data ==
+                                                                      true
+                                                                  ? Icons
+                                                                      .bookmark
+                                                                  : Icons
+                                                                      .bookmarks_outlined),
+                                                              onPressed:
+                                                                  () async {
+                                                                GetStorage
+                                                                    _gets =
+                                                                    await GetStorage();
+                                                                List rawdata =
+                                                                    await _gets
+                                                                        .read(
+                                                                            'bookmarks');
+                                                                setState(() {
+                                                                  if (rawdata.contains(
+                                                                          QuizList[
+                                                                              index]) ==
+                                                                      false) {
+                                                                    rawdata.add(
+                                                                        QuizList[
+                                                                            index]);
+                                                                  }
+                                                                  _gets.write(
+                                                                      'bookmarks',
+                                                                      rawdata);
+                                                                });
+                                                              },
+                                                            );
+                                                          } else {
+                                                            return Container();
+                                                          }
+                                                        }),
+                                                    Spacer(),
+                                                  ],
                                                 ),
                                                 GestureDetector(
                                                   onTap: () {
@@ -434,5 +489,15 @@ class _Flash_cardsState extends State<Flash_cards> {
         },
       ),
     );
+  }
+
+  _checkbookmark(int index) async {
+    GetStorage _gets = GetStorage();
+    List rawdata = await _gets.read('bookmarks');
+    if (rawdata.contains(QuizList[index])) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

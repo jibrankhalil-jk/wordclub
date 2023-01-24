@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -23,6 +24,8 @@ class Match_The_Vowel extends StatefulWidget {
 
 class _Match_The_VowelState extends State<Match_The_Vowel> {
   List<QuizMainModel> QuizList = [];
+  List<QuizMainModel> WrongList = [];
+
   int quiz_completed_status = 0;
   // var myindex = 1;
   var answercntrl = TextEditingController();
@@ -191,6 +194,12 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                     itemCount: datasnap.data.length,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, mainindex) {
+                                      if (ismultipleoffive(mainindex)) {
+                                        BlocProvider.of<GlobalCubit>(context)
+                                            .showfulladd();
+                                      }
+                                      // log('is 6 :${ismultipleoffive(6)}');
+
                                       return SingleChildScrollView(
                                         child: Column(
                                           children: [
@@ -218,12 +227,7 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                           Text('Pronunciation'
                                                               .i18n()),
                                                           Text(
-                                                            QuizList[mainindex ==
-                                                                        0
-                                                                    ? mainindex
-                                                                    : pagecntrl
-                                                                        .page!
-                                                                        .toInt()]
+                                                            QuizList[mainindex]
                                                                 .word,
                                                             style: TextStyle(
                                                                 color: Colors
@@ -240,12 +244,8 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                               GlobalState>(
                                                             builder: (context,
                                                                 state) {
-                                                              var length = QuizList[mainindex ==
-                                                                          0
-                                                                      ? mainindex
-                                                                      : pagecntrl
-                                                                          .page!
-                                                                          .toInt()]
+                                                              var length = QuizList[
+                                                                      mainindex]
                                                                   .word
                                                                   .length;
                                                               var size = length <=
@@ -278,8 +278,9 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                                     .infinity,
                                                                 child: ListView
                                                                     .builder(
-                                                                        itemCount:
-                                                                            length,
+                                                                        itemCount: QuizList[mainindex]
+                                                                            .word
+                                                                            .length,
                                                                         scrollDirection:
                                                                             Axis
                                                                                 .horizontal,
@@ -554,7 +555,7 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                 ),
                                                 Spacer(),
                                                 InkWell(
-                                                  onTap: () {
+                                                  onTap: () async {
                                                     if (final_answer
                                                             .toString()
                                                             .contains('_') ==
@@ -599,6 +600,10 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                             });
                                                       } else {
                                                         log('Incorrect');
+                                                        await BlocProvider.of<
+                                                                    GlobalCubit>(
+                                                                context)
+                                                            .play_tick_sound();
                                                         showDialog(
                                                             barrierDismissible:
                                                                 false,
@@ -612,53 +617,99 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
                                                                     AlertDialog(
                                                                   backgroundColor:
                                                                       Colors
-                                                                          .red,
-                                                                  title: Text(
-                                                                    'Incorrect',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            25,
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
+                                                                          .white,
                                                                   content: Text(
-                                                                    QuizList[
-                                                                            mainindex]
-                                                                        .word,
+                                                                    "That was incorrect.\nThe correct answer was ${QuizList[pagecntrl.page!.toInt()].word}.\n${answercntrl.text.isEmpty == true ? 'Your answer was empty' : ''}",
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                            25,
+                                                                            13,
                                                                         color: Colors
-                                                                            .white),
+                                                                            .black),
                                                                   ),
+                                                                  actions: [
+                                                                    MaterialButton(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        onPressed:
+                                                                            () {
+                                                                          setState(
+                                                                              () {
+                                                                            if (quiz_completed_status <
+                                                                                QuizList.length) {
+                                                                              quiz_completed_status++;
+                                                                              WrongList.add(QuizList[mainindex]);
+                                                                            }
+                                                                            wordexpen =
+                                                                                null;
+                                                                            current_blankselected =
+                                                                                null;
+                                                                            final_answer =
+                                                                                null;
+                                                                            Navigator.pop(context);
+
+                                                                            if (quiz_completed_status <
+                                                                                QuizList.length) {
+                                                                              pagecntrl.jumpToPage(mainindex + 1);
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          'ok',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ))
+                                                                  ],
                                                                 ),
                                                               );
                                                             });
                                                       }
                                                       Timer.periodic(
-                                                          Duration(seconds: 2),
+                                                          Duration(
+                                                              milliseconds:
+                                                                  800),
                                                           (timer) {
                                                         timer.cancel();
 
-                                                        setState(() {
-                                                          current_blankselected =
-                                                              null;
-                                                          current_selected_vovel =
-                                                              '_';
-                                                          wordexpen = null;
-                                                          final_answer = null;
-                                                          pagecntrl.jumpToPage(
-                                                              mainindex + 1);
-                                                          if (quiz_completed_status <=
-                                                              QuizList.length) {
-                                                            quiz_completed_status++;
-                                                          }
-                                                          Navigator.pop(
-                                                              context);
-                                                          answercntrl.clear();
-                                                          pagecntrl.jumpToPage(
-                                                              mainindex + 1);
-                                                        });
+                                                        if (final_answer
+                                                                .toString()
+                                                                .replaceAll(
+                                                                    ' ', '')
+                                                                .replaceAll(
+                                                                    ',', '')
+                                                                .replaceAll(
+                                                                    '[', '')
+                                                                .replaceAll(
+                                                                    ']', '')
+                                                                .toLowerCase() ==
+                                                            QuizList[mainindex]
+                                                                .word
+                                                                .toLowerCase()) {
+                                                          setState(() {
+                                                            if (quiz_completed_status <
+                                                                QuizList
+                                                                    .length) {
+                                                              quiz_completed_status++;
+                                                            }
+                                                            current_blankselected =
+                                                                null;
+                                                            current_selected_vovel =
+                                                                '_';
+                                                            wordexpen = null;
+                                                            final_answer = null;
+                                                            Navigator.pop(
+                                                                context);
+
+                                                            if (quiz_completed_status <
+                                                                QuizList
+                                                                    .length) {
+                                                              pagecntrl
+                                                                  .jumpToPage(
+                                                                      mainindex +
+                                                                          1);
+                                                            }
+                                                          });
+                                                        }
                                                       });
                                                       log(final_answer
                                                           .toString()
@@ -754,5 +805,13 @@ class _Match_The_VowelState extends State<Match_The_Vowel> {
         ),
       ),
     );
+  }
+
+  ismultipleoffive(n) {
+    while (n > 0) n = n - 5;
+
+    if (n == 0) return true;
+
+    return false;
   }
 }

@@ -14,6 +14,7 @@ import 'package:wordclub/main.dart';
 import 'package:wordclub/models/database_main_model.dart';
 import 'package:wordclub/others/constants.dart';
 import 'package:localization/localization.dart';
+import 'package:wordclub/widgets/result.dart';
 
 class Fill_In_TheBlanks extends StatefulWidget {
   Fill_In_TheBlanks({this.bundletype, this.quiztype});
@@ -469,7 +470,7 @@ class _Fill_In_TheBlanksState extends State<Fill_In_TheBlanks> {
                                                                 BorderRadius
                                                                     .circular(
                                                                         12)),
-                                                    onPressed: () {
+                                                    onPressed: () async {
                                                       if (final_answer
                                                               .toString()
                                                               .replaceAll(
@@ -524,6 +525,65 @@ class _Fill_In_TheBlanksState extends State<Fill_In_TheBlanks> {
                                                                 );
                                                               });
                                                         } else {
+                                                          await BlocProvider.of<
+                                                                      GlobalCubit>(
+                                                                  context)
+                                                              .play_tick_sound();
+                                                          showDialog(
+                                                              barrierDismissible:
+                                                                  false,
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return WillPopScope(
+                                                                  onWillPop: () =>
+                                                                      Future.value(
+                                                                          false),
+                                                                  child:
+                                                                      AlertDialog(
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    content:
+                                                                        Text(
+                                                                      "That was incorrect.\nThe correct answer was  .\n${answercntrl.text.isEmpty == true ? 'Your answer was empty' : ''}",
+                                                                      // "That was incorrect.\nThe correct answer was ${QuizList[index].word}.\n${answercntrl.text.isEmpty == true ? 'Your answer was empty' : ''}",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              13,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                    actions: [
+                                                                      MaterialButton(
+                                                                          color: Colors
+                                                                              .red,
+                                                                          onPressed:
+                                                                              () {
+                                                                            // setState(
+                                                                            //     () {
+                                                                            //   if (quiz_completed_status <=
+                                                                            //       QuizList.length) {
+                                                                            //     quiz_completed_status++;
+                                                                            //   }
+                                                                            //   Navigator.pop(context);
+                                                                            //   answercntrl.clear();
+                                                                            //   pagecntrl.jumpToPage(index +
+                                                                            //       1);
+                                                                            // WrongList.add(QuizList.)
+                                                                            // });}
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            'ok',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          ))
+                                                                    ],
+                                                                  ),
+                                                                );
+                                                              });
+
                                                           showDialog(
                                                               barrierDismissible:
                                                                   false,
